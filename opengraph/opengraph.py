@@ -2,17 +2,8 @@
 
 import re
 import urllib2
-try:
-    from bs4 import BeautifulSoup
-except ImportError:
-    from BeautifulSoup import BeautifulSoup
-
-global import_json
-try:
-    import json
-    import_json = True
-except ImportError:
-    import_json = False
+from bs4 import BeautifulSoup
+import json
 
 class OpenGraph(dict):
     """
@@ -90,10 +81,6 @@ class OpenGraph(dict):
         
     def to_json(self):
         # TODO: force unicode
-        global import_json
-        if not import_json:
-            return "{'error':'there isn't json module'}"
-
         if not self.is_valid():
             return json.dumps({'error':'og metadata is not valid'})
             
@@ -103,7 +90,7 @@ class OpenGraph(dict):
         pass
 
     def scrape_image(self, doc):
-        images = [dict(img.attrs)['src']
+        images = [dict(img.attrs).get('src')
             for img in doc.html.body.findAll('img')]
 
         if images:
